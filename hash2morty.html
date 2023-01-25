@@ -1,0 +1,35 @@
+<script src="https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.min.js"></script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Generate Emortality</title>
+  </head>
+  <body>
+    <form>
+      <label>Enter Hash:</label>
+      <input type="text" id="input_hash">
+      <button type="button" onclick="generateImage()">Generate it morty</button>
+    </form>
+    <br>
+    <img id="generated_image" style="display:none">
+    <script>
+      function generateImage() {
+        // Get the input hash value
+        var input_hash = document.getElementById("input_hash").value;
+        // Get a hash of the input value
+        var hash = CryptoJS.SHA3(input_hash, { outputLength: 256 });
+        var character_id = parseInt(hash.toString().slice(0,8),16) % 827;
+        // Make a GET request to the Rick and Morty API
+        fetch(`https://rickandmortyapi.com/api/character/avatar/${character_id}.jpeg`)
+          .then(response => response.blob())
+          .then(blob => {
+            var url = URL.createObjectURL(blob);
+            // Display the image
+            var img = document.getElementById("generated_image");
+            img.src = url;
+            img.style.display = "block";
+          });
+      }
+    </script>
+  </body>
+</html>
